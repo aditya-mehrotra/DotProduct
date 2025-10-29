@@ -11,7 +11,15 @@ from .serializers import CategorySerializer, TransactionSerializer, BudgetSerial
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def health_check(request):
-    """Health check endpoint to verify the API is running."""
+    """
+    Health check
+
+    Returns a simple status payload so platforms like Render can verify
+    the API service is alive.
+
+    Response:
+    - 200 OK: { "status": "healthy", "message": "..." }
+    """
     return Response({
         'status': 'healthy',
         'message': 'DotProduct API is running successfully',
@@ -19,26 +27,55 @@ def health_check(request):
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
-    """ViewSet for managing categories"""
+    """
+    Categories
+
+    CRUD operations for the authenticated user's categories.
+
+    Fields:
+    - name (string, required)
+    - type (string, required: "income" | "expense")
+
+    Authentication: Requires an authenticated session.
+    """
     serializer_class = CategorySerializer
     permission_classes = [IsAuthenticated]
     
     def get_queryset(self):
-        """Return categories for the authenticated user"""
+        """Return categories belonging to the authenticated user only."""
         return Category.objects.filter(user=self.request.user)
     
     def perform_create(self, serializer):
-        """Assign the user when creating a category"""
+        """Assign the authenticated user when creating a category."""
         serializer.save(user=self.request.user)
 
 
 class TransactionViewSet(viewsets.ModelViewSet):
-    """ViewSet for managing transactions"""
+    """
+    Transactions
+
+    CRUD operations for the authenticated user's transactions.
+
+    Fields:
+    - amount (decimal, required)
+    - type (string, required: "income" | "expense")
+    - category (fk to Category, required)
+    - date (date, defaults to today)
+    - notes (string, optional)
+
+    Filtering via query params:
+    - type: income | expense
+    - category: category id
+    - start_date: YYYY-MM-DD (inclusive)
+    - end_date: YYYY-MM-DD (inclusive)
+
+    Authentication: Requires an authenticated session.
+    """
     serializer_class = TransactionSerializer
     permission_classes = [IsAuthenticated]
     
     def get_queryset(self):
-        """Return transactions for the authenticated user with filtering"""
+        """Return the user's transactions with optional filters applied."""
         queryset = Transaction.objects.filter(user=self.request.user)
         
         # Filter by type
@@ -62,21 +99,33 @@ class TransactionViewSet(viewsets.ModelViewSet):
         return queryset
     
     def perform_create(self, serializer):
-        """Assign the user when creating a transaction"""
+        """Assign the authenticated user when creating a transaction."""
         serializer.save(user=self.request.user)
 
 
 class BudgetViewSet(viewsets.ModelViewSet):
-    """ViewSet for managing budgets"""
+    """
+    Budgets
+
+    CRUD operations for the authenticated user's budgets.
+
+    Fields:
+    - category (fk to Category, required)
+    - amount (decimal, required)
+    - period (string, required: e.g., monthly)
+    - start_date (date, required)
+
+    Authentication: Requires an authenticated session.
+    """
     serializer_class = BudgetSerializer
     permission_classes = [IsAuthenticated]
     
     def get_queryset(self):
-        """Return budgets for the authenticated user"""
+        """Return budgets belonging to the authenticated user only."""
         return Budget.objects.filter(user=self.request.user)
     
     def perform_create(self, serializer):
-        """Assign the user when creating a budget"""
+        """Assign the authenticated user when creating a budget."""
         serializer.save(user=self.request.user)
 
 
@@ -84,7 +133,17 @@ class BudgetViewSet(viewsets.ModelViewSet):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def financial_summary(request):
-    """Get financial summary for the authenticated user"""
+    """
+    Financial summary
+
+    Returns totals for income, expenses, and current balance for
+    the authenticated user.
+
+    Response:
+    - total_income (number)
+    - total_expenses (number)
+    - balance (number)
+    """
     user = request.user
     
     # Get all transactions for the user
@@ -111,7 +170,15 @@ def financial_summary(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def category_summary(request):
-    """Get summary by category"""
+    """
+    Category summary
+
+    Aggregated totals grouped by category name and type for the
+    authenticated user.
+
+    Response:
+    - category_summary: [ { category__name, category__type, type, total } ]
+    """
     user = request.user
     
     # Get transactions grouped by category
@@ -129,7 +196,19 @@ def category_summary(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def budget_status(request):
-    """Get budget status for the authenticated user"""
+    """
+    Budget status
+
+    For each budget, returns budgeted amount, actual spend, and remaining
+    for the current period.
+
+    Response item fields:
+    - category (string)
+    - budgeted_amount (number)
+    - actual_amount (number)
+    - remaining (number)
+    - period (string)
+    """
     user = request.user
     
     budgets = Budget.objects.filter(user=user)

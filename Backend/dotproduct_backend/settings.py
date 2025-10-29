@@ -115,7 +115,11 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10,
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
-    ],
+        # Enable Browsable API in development to provide interactive docs
+        # It can be enabled in production as well if desired.
+    ] + ([
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    ] if DEBUG else []),
     'DEFAULT_PARSER_CLASSES': [
         'rest_framework.parsers.JSONParser',
     ],
@@ -129,8 +133,14 @@ CORS_ALLOWED_ORIGINS = config(
 
 CORS_ALLOW_CREDENTIALS = True
 
-# CSRF settings for development
-CSRF_COOKIE_SECURE = False
+# Cookie/security settings for cross-site frontend (Vercel) -> backend (Render)
+# Ensure cookies are sent in cross-site requests
+SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_SAMESITE = 'None'
+CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_SAMESITE = 'None'
+
+# CSRF trusted origins (override via env in production)
 CSRF_COOKIE_HTTPONLY = False
-CSRF_TRUSTED_ORIGINS = ['http://localhost:3000']
+CSRF_TRUSTED_ORIGINS = config('CSRF_TRUSTED_ORIGINS', default='http://localhost:3000').split(',')
 

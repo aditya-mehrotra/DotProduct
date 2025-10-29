@@ -13,7 +13,19 @@ import json
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def login_view(request):
-    """Login endpoint"""
+    """
+    Login
+
+    Authenticates a user using username and password and starts a session.
+
+    Request JSON:
+    - username (string, required)
+    - password (string, required)
+
+    Responses:
+    - 200 OK: user details and success message
+    - 400/401 for invalid input or credentials
+    """
     data = json.loads(request.body)
     username = data.get('username')
     password = data.get('password')
@@ -48,7 +60,18 @@ def login_view(request):
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def register_view(request):
-    """Registration endpoint"""
+    """
+    Register
+
+    Creates a new user account.
+
+    Request JSON:
+    - username (string, required)
+    - email (string, required)
+    - password (string, required)
+    - first_name (string, optional)
+    - last_name (string, optional)
+    """
     data = json.loads(request.body)
     username = data.get('username')
     email = data.get('email')
@@ -97,7 +120,11 @@ def register_view(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def logout_view(request):
-    """Logout endpoint"""
+    """
+    Logout
+
+    Ends the authenticated user's session.
+    """
     logout(request)
     return Response({'detail': 'Logout successful'})
 
@@ -105,7 +132,11 @@ def logout_view(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def user_view(request):
-    """Get current user info"""
+    """
+    Current user
+
+    Returns the profile of the authenticated user.
+    """
     user = request.user
     return Response({
         'id': user.id,
