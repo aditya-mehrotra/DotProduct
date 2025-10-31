@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "../../contexts/AuthContext";
 import { useEffect } from "react";
 import CategoryForm from "../../components/CategoryForm";
+import styles from "../page.module.scss";
 
 export default function CreateCategoryPage() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -25,15 +26,8 @@ export default function CreateCategoryPage() {
 
   if (isLoading) {
     return (
-      <div
-        style={{
-          minHeight: "100vh",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <div style={{ fontSize: "1.25rem", color: "#666" }}>Loading...</div>
+      <div className={styles.loadingContainer}>
+        <div className={styles.loadingText}>Loading...</div>
       </div>
     );
   }
@@ -43,14 +37,8 @@ export default function CreateCategoryPage() {
   }
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        backgroundColor: "#f5f5f5",
-        padding: "2rem",
-      }}
-    >
-      <div style={{ maxWidth: "600px", margin: "0 auto" }}>
+    <div className={styles.pageWrapper}>
+      <div className={styles.contentWrapper}>
         <CategoryForm onSuccess={handleSuccess} onCancel={handleCancel} />
       </div>
     </div>

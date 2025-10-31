@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Category, TransactionFormData } from "../types";
 import { getCategories, createTransaction, createCategory } from "../lib/api";
+import styles from "./AddTransactionForm.module.scss";
 
 interface AddTransactionFormProps {
   onSuccess?: () => void;
@@ -123,69 +124,21 @@ export default function AddTransactionForm({
   };
 
   return (
-    <div
-      style={{
-        backgroundColor: "white",
-        padding: "2rem",
-        borderRadius: "8px",
-        maxWidth: "500px",
-        margin: "0 auto",
-      }}
-    >
-      <h2
-        style={{
-          fontSize: "1.5rem",
-          fontWeight: "600",
-          marginBottom: "1.5rem",
-          color: "#333",
-        }}
-      >
-        Add Transaction
-      </h2>
+    <div className={styles.container}>
+      <h2 className={styles.title}>Add Transaction</h2>
 
       <form onSubmit={handleSubmit}>
-        {error && (
-          <div
-            style={{
-              backgroundColor: "#f8d7da",
-              color: "#721c24",
-              padding: "0.75rem",
-              borderRadius: "4px",
-              marginBottom: "1rem",
-              fontSize: "0.875rem",
-            }}
-          >
-            {error}
-          </div>
-        )}
+        {error && <div className={styles.error}>{error}</div>}
 
         {/* Transaction Type */}
-        <div style={{ marginBottom: "1rem" }}>
-          <label
-            htmlFor="type"
-            style={{
-              display: "block",
-              marginBottom: "0.5rem",
-              fontWeight: "500",
-              color: "#374151",
-            }}
-          >
-            Type *
-          </label>
+        <div className={styles.formGroup}>
+          <label htmlFor="type">Type *</label>
           <select
             id="type"
             name="type"
             value={formData.type}
             onChange={handleInputChange}
             required
-            style={{
-              width: "100%",
-              padding: "0.75rem",
-              border: "1px solid #d1d5db",
-              borderRadius: "4px",
-              fontSize: "1rem",
-              boxSizing: "border-box",
-            }}
           >
             <option value="expense">Expense</option>
             <option value="income">Income</option>
@@ -193,32 +146,14 @@ export default function AddTransactionForm({
         </div>
 
         {/* Category */}
-        <div style={{ marginBottom: "1rem" }}>
-          <label
-            htmlFor="category"
-            style={{
-              display: "block",
-              marginBottom: "0.5rem",
-              fontWeight: "500",
-              color: "#374151",
-            }}
-          >
-            Category
-          </label>
-          <div style={{ display: "flex", gap: "0.5rem" }}>
+        <div className={styles.formGroup}>
+          <label htmlFor="category">Category</label>
+          <div className={styles.categoryRow}>
             <select
               id="category"
               name="category"
               value={formData.category}
               onChange={handleInputChange}
-              style={{
-                flex: 1,
-                padding: "0.75rem",
-                border: "1px solid #d1d5db",
-                borderRadius: "4px",
-                fontSize: "1rem",
-                boxSizing: "border-box",
-              }}
             >
               <option value="">Select a category</option>
               {categories.map((category) => (
@@ -230,15 +165,7 @@ export default function AddTransactionForm({
             <button
               type="button"
               onClick={() => setShowNewCategoryForm(!showNewCategoryForm)}
-              style={{
-                padding: "0.75rem",
-                backgroundColor: "#6b7280",
-                color: "white",
-                border: "none",
-                borderRadius: "4px",
-                cursor: "pointer",
-                fontSize: "0.875rem",
-              }}
+              className={styles.addButton}
             >
               +
             </button>
@@ -246,42 +173,19 @@ export default function AddTransactionForm({
 
           {/* New Category Form */}
           {showNewCategoryForm && (
-            <div
-              style={{
-                marginTop: "0.5rem",
-                padding: "1rem",
-                backgroundColor: "#f9fafb",
-                borderRadius: "4px",
-                border: "1px solid #e5e7eb",
-              }}
-            >
+            <div className={styles.newCategoryForm}>
               <div>
-                <div style={{ display: "flex", gap: "0.5rem" }}>
+                <div className={styles.newCategoryRow}>
                   <input
                     type="text"
                     placeholder={`New ${formData.type} category`}
                     value={newCategoryName}
                     onChange={(e) => setNewCategoryName(e.target.value)}
-                    style={{
-                      flex: 1,
-                      padding: "0.5rem",
-                      border: "1px solid #d1d5db",
-                      borderRadius: "4px",
-                      fontSize: "0.875rem",
-                    }}
                   />
                   <button
-                    type="submit"
-                    style={{
-                      padding: "0.5rem 1rem",
-                      backgroundColor: "#10b981",
-                      color: "white",
-                      border: "none",
-                      borderRadius: "4px",
-                      cursor: "pointer",
-                      fontSize: "0.875rem",
-                    }}
+                    type="button"
                     onClick={handleCreateCategory}
+                    className={styles.addCategoryBtn}
                   >
                     Add
                   </button>
@@ -291,15 +195,7 @@ export default function AddTransactionForm({
                       setShowNewCategoryForm(false);
                       setNewCategoryName("");
                     }}
-                    style={{
-                      padding: "0.5rem 1rem",
-                      backgroundColor: "#6b7280",
-                      color: "white",
-                      border: "none",
-                      borderRadius: "4px",
-                      cursor: "pointer",
-                      fontSize: "0.875rem",
-                    }}
+                    className={styles.cancelCategoryBtn}
                   >
                     Cancel
                   </button>
@@ -310,18 +206,8 @@ export default function AddTransactionForm({
         </div>
 
         {/* Amount */}
-        <div style={{ marginBottom: "1rem" }}>
-          <label
-            htmlFor="amount"
-            style={{
-              display: "block",
-              marginBottom: "0.5rem",
-              fontWeight: "500",
-              color: "#374151",
-            }}
-          >
-            Amount *
-          </label>
+        <div className={styles.formGroup}>
+          <label htmlFor="amount">Amount *</label>
           <input
             type="number"
             id="amount"
@@ -332,30 +218,12 @@ export default function AddTransactionForm({
             min="0.01"
             step="0.01"
             placeholder="0.00"
-            style={{
-              width: "100%",
-              padding: "0.75rem",
-              border: "1px solid #d1d5db",
-              borderRadius: "4px",
-              fontSize: "1rem",
-              boxSizing: "border-box",
-            }}
           />
         </div>
 
         {/* Date */}
-        <div style={{ marginBottom: "1rem" }}>
-          <label
-            htmlFor="date"
-            style={{
-              display: "block",
-              marginBottom: "0.5rem",
-              fontWeight: "500",
-              color: "#374151",
-            }}
-          >
-            Date *
-          </label>
+        <div className={styles.formGroup}>
+          <label htmlFor="date">Date *</label>
           <input
             type="date"
             id="date"
@@ -363,30 +231,12 @@ export default function AddTransactionForm({
             value={formData.date}
             onChange={handleInputChange}
             required
-            style={{
-              width: "100%",
-              padding: "0.75rem",
-              border: "1px solid #d1d5db",
-              borderRadius: "4px",
-              fontSize: "1rem",
-              boxSizing: "border-box",
-            }}
           />
         </div>
 
         {/* Description */}
-        <div style={{ marginBottom: "1.5rem" }}>
-          <label
-            htmlFor="description"
-            style={{
-              display: "block",
-              marginBottom: "0.5rem",
-              fontWeight: "500",
-              color: "#374151",
-            }}
-          >
-            Description
-          </label>
+        <div className={styles.formGroup}>
+          <label htmlFor="description">Description</label>
           <textarea
             id="description"
             name="description"
@@ -394,39 +244,16 @@ export default function AddTransactionForm({
             onChange={handleInputChange}
             rows={3}
             placeholder="Optional description..."
-            style={{
-              width: "100%",
-              padding: "0.75rem",
-              border: "1px solid #d1d5db",
-              borderRadius: "4px",
-              fontSize: "1rem",
-              boxSizing: "border-box",
-              resize: "vertical",
-            }}
           />
         </div>
 
         {/* Buttons */}
-        <div
-          style={{
-            display: "flex",
-            gap: "1rem",
-            justifyContent: "flex-end",
-          }}
-        >
+        <div className={styles.actions}>
           {onCancel && (
             <button
               type="button"
               onClick={onCancel}
-              style={{
-                padding: "0.75rem 1.5rem",
-                backgroundColor: "#6b7280",
-                color: "white",
-                border: "none",
-                borderRadius: "4px",
-                cursor: "pointer",
-                fontSize: "0.875rem",
-              }}
+              className={styles.cancelButton}
             >
               Cancel
             </button>
@@ -434,15 +261,7 @@ export default function AddTransactionForm({
           <button
             type="submit"
             disabled={isLoading}
-            style={{
-              padding: "0.75rem 1.5rem",
-              backgroundColor: isLoading ? "#9ca3af" : "#3b82f6",
-              color: "white",
-              border: "none",
-              borderRadius: "4px",
-              cursor: isLoading ? "not-allowed" : "pointer",
-              fontSize: "0.875rem",
-            }}
+            className={`${styles.submitButton} ${styles.blue}`}
           >
             {isLoading ? "Adding..." : "Add Transaction"}
           </button>

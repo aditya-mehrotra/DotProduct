@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { createCategory } from "../lib/api";
+import styles from "./CategoryForm.module.scss";
 
 interface CategoryFormProps {
   onSuccess?: () => void;
@@ -40,55 +41,14 @@ export default function CategoryForm({
   };
 
   return (
-    <div
-      style={{
-        backgroundColor: "white",
-        padding: "2rem",
-        borderRadius: "8px",
-        boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-        maxWidth: "480px",
-        margin: "0 auto",
-      }}
-    >
-      <h2
-        style={{
-          fontSize: "1.5rem",
-          fontWeight: "600",
-          marginBottom: "1.5rem",
-          color: "#333",
-        }}
-      >
-        Add Category
-      </h2>
+    <div className={styles.container}>
+      <h2 className={styles.title}>Add Category</h2>
 
       <form onSubmit={handleSubmit}>
-        {error && (
-          <div
-            style={{
-              backgroundColor: "#fde8e8",
-              color: "#991b1b",
-              padding: "0.75rem",
-              borderRadius: "4px",
-              marginBottom: "1rem",
-              fontSize: "0.875rem",
-            }}
-          >
-            {error}
-          </div>
-        )}
+        {error && <div className={styles.error}>{error}</div>}
 
-        <div style={{ marginBottom: "1rem" }}>
-          <label
-            htmlFor="name"
-            style={{
-              display: "block",
-              marginBottom: "0.5rem",
-              fontWeight: "500",
-              color: "#374151",
-            }}
-          >
-            Category Name *
-          </label>
+        <div className={styles.formGroup}>
+          <label htmlFor="name">Category Name *</label>
           <input
             id="name"
             name="name"
@@ -97,69 +57,29 @@ export default function CategoryForm({
             onChange={(e) => setName(e.target.value)}
             placeholder="e.g., Groceries, Salary"
             required
-            style={{
-              width: "100%",
-              padding: "0.75rem",
-              border: "1px solid #d1d5db",
-              borderRadius: "4px",
-              fontSize: "1rem",
-              boxSizing: "border-box",
-            }}
           />
         </div>
 
-        <div style={{ marginBottom: "1.5rem" }}>
-          <label
-            htmlFor="type"
-            style={{
-              display: "block",
-              marginBottom: "0.5rem",
-              fontWeight: "500",
-              color: "#374151",
-            }}
-          >
-            Category Type *
-          </label>
+        <div className={`${styles.formGroup} ${styles.largeMargin}`}>
+          <label htmlFor="type">Category Type *</label>
           <select
             id="type"
             name="type"
             value={type}
             onChange={(e) => setType(e.target.value as "income" | "expense")}
             required
-            style={{
-              width: "100%",
-              padding: "0.75rem",
-              border: "1px solid #d1d5db",
-              borderRadius: "4px",
-              fontSize: "1rem",
-              boxSizing: "border-box",
-            }}
           >
             <option value="expense">Expense</option>
             <option value="income">Income</option>
           </select>
         </div>
 
-        <div
-          style={{
-            display: "flex",
-            gap: "1rem",
-            justifyContent: "flex-end",
-          }}
-        >
+        <div className={styles.actions}>
           {onCancel && (
             <button
               type="button"
               onClick={onCancel}
-              style={{
-                padding: "0.75rem 1.5rem",
-                backgroundColor: "#6b7280",
-                color: "white",
-                border: "none",
-                borderRadius: "4px",
-                cursor: "pointer",
-                fontSize: "0.875rem",
-              }}
+              className={styles.cancelButton}
             >
               Cancel
             </button>
@@ -167,15 +87,7 @@ export default function CategoryForm({
           <button
             type="submit"
             disabled={isLoading}
-            style={{
-              padding: "0.75rem 1.5rem",
-              backgroundColor: isLoading ? "#9ca3af" : "#3b82f6",
-              color: "white",
-              border: "none",
-              borderRadius: "4px",
-              cursor: isLoading ? "not-allowed" : "pointer",
-              fontSize: "0.875rem",
-            }}
+            className={styles.submitButton}
           >
             {isLoading ? "Adding..." : "Add Category"}
           </button>
