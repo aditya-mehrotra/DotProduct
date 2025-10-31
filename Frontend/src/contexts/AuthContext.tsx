@@ -64,6 +64,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         secure: process.env.NODE_ENV === "production",
         sameSite: "lax",
       });
+      Cookies.set("csrftoken2", loginResponse.data.csrf_token, {
+        expires: 7, // 7 days
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+      });
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || "Login failed");
     } finally {

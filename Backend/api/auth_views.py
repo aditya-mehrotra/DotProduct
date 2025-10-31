@@ -7,6 +7,8 @@ from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
+from django.middleware.csrf import get_token
+from django.views.decorators.csrf import ensure_csrf_cookie
 import json
 
 
@@ -48,7 +50,8 @@ def login_view(request):
                 'email': user.email,
                 'first_name': user.first_name,
                 'last_name': user.last_name,
-            }
+            },
+            'csrf_token': get_token(request),
         })
     else:
         return Response(

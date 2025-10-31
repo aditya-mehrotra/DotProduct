@@ -14,7 +14,7 @@ export const apiClient = axios.create({
 
 // Add request interceptor to include CSRF token
 apiClient.interceptors.request.use((config) => {
-  const csrfToken = Cookies.get('csrftoken')
+  const csrfToken = Cookies.get('csrftoken2')
   if (csrfToken) {
     config.headers['X-CSRFToken'] = csrfToken
   }
